@@ -21,4 +21,12 @@ app.get("/db-test", async (req, res) => {
   }
 });
 
+// const pool = require("./config/db");
+
+app.get("/users", async (req, res) => {
+  const users = await pool.query("SELECT * FROM users");
+  res.json(users.rows);
+});
+
+
 module.exports = app;
