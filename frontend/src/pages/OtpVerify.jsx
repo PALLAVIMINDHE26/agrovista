@@ -1,22 +1,34 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 
 export default function OtpVerify() {
   const [otp, setOtp] = useState("");
+  const navigate = useNavigate();
 
   const handleVerify = async (e) => {
     e.preventDefault();
 
     try {
       const userId = localStorage.getItem("userId");
-
       const res = await axios.post(
         "http://localhost:5000/api/auth/verify-otp",
         { userId, otp }
       );
 
-      localStorage.setItem("token", res.data.token);
-      alert("Login successful!");
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+        const decoded = JSON.parse(
+        atob(res.data.token.split('.')[1])
+        );
+
+        if (decoded.role === "admin") {
+        navigate("/admin-dashboard");
+        } else {
+        navigate("/dashboard");
+        }
+      }
     } catch (err) {
       alert(err.response?.data?.message || "OTP verification failed");
     }
@@ -24,7 +36,9 @@ export default function OtpVerify() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 to-green-300">
-      <form className="bg-white p-8 rounded-xl shadow-xl w-96">
+      <form  onSubmit={handleVerify}
+        className="bg-white p-8 rounded-xl shadow-xl w-96"
+      >
         <h2 className="text-xl font-bold text-center text-green-700 mb-4">
           OTP Verification
         </h2>

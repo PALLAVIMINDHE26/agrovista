@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { motion } from "framer-motion";
+
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -28,6 +30,12 @@ export default function Login() {
   };
 
   return (
+     <motion.div
+    initial={{ opacity: 0, y: 40 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -40 }}
+    transition={{ duration: 0.5 }}
+     >
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 to-green-300">
       <form
         onSubmit={handleLogin}
@@ -53,6 +61,12 @@ export default function Login() {
           required
         />
 
+        <p className="text-right text-sm mb-4">
+          <Link to="/forgot-password" className="text-green-600 hover:underline">
+           Forgot Password?
+          </Link>
+        </p>
+
         <button
           disabled={loading}
           className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition"
@@ -68,5 +82,6 @@ export default function Login() {
         </p>
       </form>
     </div>
+    </motion.div>
   );
 }

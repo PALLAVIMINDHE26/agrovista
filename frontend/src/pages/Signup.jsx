@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { motion } from "framer-motion";
+
 
 export default function Signup() {
   const [name, setName] = useState("");
@@ -26,6 +28,12 @@ export default function Signup() {
   };
 
   return (
+     <motion.div
+    initial={{ opacity: 0, y: 40 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -40 }}
+    transition={{ duration: 0.5 }}
+     >
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-200 to-green-400">
       <form className="bg-white p-8 rounded-xl shadow-xl w-96">
         <h2 className="text-2xl font-bold text-center text-green-700 mb-6">
@@ -66,5 +74,6 @@ export default function Signup() {
         </p>
       </form>
     </div>
+    </motion.div>
   );
 }

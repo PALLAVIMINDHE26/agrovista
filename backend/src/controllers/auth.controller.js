@@ -46,6 +46,13 @@ exports.login = async (req, res) => {
   await sendOtp(user.email, otp);
 
   res.json({ message: "OTP sent to email", userId: user.id });
+// Login with JWT (no OTP)
+  const token = jwt.sign(
+  { id: user.id, role: user.role },
+  process.env.JWT_SECRET,
+  { expiresIn: "1d" }
+);
+  res.json({ message: "Login successful", token });
 };
 
 // Verify OTP MFA
