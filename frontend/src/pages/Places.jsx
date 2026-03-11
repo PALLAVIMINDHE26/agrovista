@@ -3,8 +3,9 @@ import axios from "axios";
 import Navbar from "../components/Navbar";
 import MainLayout from "../layouts/MainLayout";
 import BookingCard from "../components/BookingCard";
-import { Link, useNavigate } from "react-router-dom";
-
+// import { useNavigate } from "react-router-dom";
+// import { destinations } from "../data/destinations";
+import { Link } from "react-router-dom";
 
 
 export default function Places() {
@@ -66,6 +67,14 @@ if (sortOrder === "az") {
     <option value="Kerala">Kerala</option>
     <option value="Assam">Assam</option>
     <option value="Rajasthan">Rajasthan</option>
+    <option value="Punjab">Punjab</option>
+    <option value="AndhraPradesh">Andhra Pradesh</option>
+    <option value="Goa">Goa</option>
+    <option value="Tamil Nadu">Tamil Nadu</option>
+    <option value="Nagaland">Nagaland</option>
+    <option value="Karnataka">Karnataka</option>
+    <option value="Uttar Pradesh">Uttar Pradesh</option>
+    <option value="Uttarakhand">Uttarakhand</option>
   </select>
 
   {/* Price Slider */}
@@ -92,35 +101,52 @@ if (sortOrder === "az") {
   <option value="za">Name: Z-A</option>
   </select>
 </div>
-        <div className="grid md:grid-cols-3 gap-8">
-          {filteredPlaces.map((place) => (
-            <BookingCard key={place.id} place={place} />
-         ))}
-        </div>
+        {/* <div className="grid md:grid-cols-3 gap-8">
+          {filteredPlaces.map((place) => {
+           console.log(place.image_url);
+           return <BookingCard key={place.id} place={place} />;
+          })}
+        </div> */}
 
-      <div className="grid md:grid-cols-3 gap-6">
-        {places.map((p) => (
-          <div
-            key={p.id}
-            className="bg-white p-5 rounded-xl shadow hover:scale-105 transition"
-          >
-            <h2 className="text-xl font-semibold text-green-700">
-              {p.name}
-            </h2>
-            <p className="text-sm text-gray-600 mt-2">{p.description}</p>
+       <div className="grid md:grid-cols-3 gap-6">
+        {filteredPlaces.map((place) => (
+          <Link
+              to={`/places/${place.id}`}
+               key={place.id}
+              className="block"
+            >
 
-            <p className="mt-2 text-sm">
-              📍 {p.district}, {p.state}
-            </p>
+      <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition">
+    <img
+      src={place.image_url}
+      alt={place.name}
+      className="h-48 w-full object-cover"
+    />
 
-            <p className="mt-2 text-sm text-green-600">
-              🌿 {p.features}
-            </p>
-          </div>
-          
-        ))}
+    <div className="p-4">
+      <h2 className="text-xl font-semibold">
+        {place.name}
+      </h2>
 
+      <p className="text-gray-500">
+        {place.state}
+      </p>
+
+      <p className="text-sm text-gray-600 mt-2">
+        {place.description.substring(0, 80)}...
+      </p>
+
+        <p className="text-green-600 font-semibold mt-2">
+        Rating: ⭐ {place.rating}
+      </p> 
+       </div>
       </div>
+    </Link>
+
+    ))}
+
+
+  </div> 
     </div>
     </MainLayout>
   );

@@ -4,14 +4,14 @@ const pool = require("../config/db");
 
 // Get all culture data
 router.get("/", async (req, res) => {
-  const result = await pool.query("SELECT * FROM states_culture");
+  const result = await pool.query("SELECT * FROM state_culture");
   res.json(result.rows);
 });
 
 // Get single festival by ID
 router.get("/:id", async (req, res) => {
   const result = await pool.query(
-    "SELECT * FROM states_culture WHERE id=$1",
+    "SELECT * FROM state_culture WHERE id=$1",
     [req.params.id]
   );
 

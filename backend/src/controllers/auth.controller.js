@@ -16,8 +16,7 @@ exports.signup = async (req, res) => {
   res.json({ message: "Signup successful. Please login." });
 };
 
-// Login with OTP
-
+// Login with OTP MFA
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -46,16 +45,9 @@ exports.login = async (req, res) => {
   await sendOtp(user.email, otp);
 
   res.json({ message: "OTP sent to email", userId: user.id });
-// Login with JWT (no OTP)
-  const token = jwt.sign(
-  { id: user.id, role: user.role },
-  process.env.JWT_SECRET,
-  { expiresIn: "1d" }
-);
-  res.json({ message: "Login successful", token });
 };
 
-// Verify OTP MFA
+//  Verify OTP and issue JWT  
 
 exports.verifyOtp = async (req, res) => {
   const { userId, otp } = req.body;
@@ -73,14 +65,24 @@ exports.verifyOtp = async (req, res) => {
   if (record.otp_code !== otp || new Date() > record.expires_at)
     return res.status(400).json({ message: "Invalid or expired OTP" });
 
-  await pool.query(
-    "UPDATE users SET is_verified=true WHERE id=$1",
+  // Get user again to fetch role
+  const userResult = await pool.query(
+    "SELECT * FROM users WHERE id=$1",
     [userId]
   );
 
-  const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
-    expiresIn: "1d",
-  });
+  const user = userResult.rows[0];
+
+  const token = jwt.sign(
+    {
+      userId: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role   // 👈 CRITICAL FIX
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: "1d" }
+  );
 
   res.json({ message: "Login successful", token });
 };

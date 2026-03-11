@@ -20,12 +20,15 @@ import Recommendation from "./pages/Recommendation";
 import BookNow from "./pages/BookNow";
 import Blogs from "./pages/Blogs";
 import Birds from "./pages/Birds";
-import Activities from "./pages/Activities";
+// import Activities from "./pages/Activities";
 import UserDashboard from "./pages/UserDashboard";
 import PlaceDetails from "./pages/PlaceDetails";
-import PrivateRoute from "./components/PrivateRoute";
+// import PrivateRoute from "./components/PrivateRoute";
 import AdminRoute from "./components/AdminRoute";
-
+import Activities from "./pages/Activities";
+import ActivityDetails from "./pages/ActivityDetails";
+import ProtectedRoute from "./components/ProtectedRoute";
+import EditProfile from "./pages/EditProfile";
 
 
 
@@ -52,15 +55,18 @@ function AnimatedRoutes() {
         <Route path="/recommendation" element={<Recommendation />} />
         <Route path="/book-now/:id" element={<BookNow />} />
         <Route path="/book-now" element={<BookNow />} />
+        <Route path="/booknow/:id" element={<BookNow />} />
         <Route path="/blogs" element={<Blogs />} />
         <Route path="/birds" element={<Birds />} />
         <Route path="/activities" element={<Activities />} />
         <Route path="/dashboard" element={<UserDashboard />} />
         <Route path="/places/:id" element={<PlaceDetails />} />
-        <Route path="/admin-dashboard" element={ <PrivateRoute> <AdminDashboard /> </PrivateRoute> } />
-        <Route path="/dashboard" element={ <PrivateRoute> <UserDashboard /> </PrivateRoute> } />  
-       <Route path="/admin-dashboard" element={ <AdminRoute> <AdminDashboard /> </AdminRoute> } /> 
-       <Route path="/user-dashboard" element={<UserDashboard />} />
+        <Route path="/admin-dashboard" element={<ProtectedRoute role="admin"><AdminDashboard /></ProtectedRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute role="user"><UserDashboard /></ProtectedRoute>} />  
+        <Route path="/user-dashboard" element={<UserDashboard />} />
+        <Route path="/activities" element={<Activities />} />
+        <Route path="/activities/:id" element={<ActivityDetails />} />
+        <Route path="/edit-profile" element={<EditProfile />} />
 
 
          

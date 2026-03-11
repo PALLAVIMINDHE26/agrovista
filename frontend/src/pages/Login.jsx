@@ -1,7 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
+import { jwtDecode } from "jwt-decode";
 
 
 export default function Login() {
@@ -10,24 +11,47 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+//   const decoded = jwtDecode(res.data.token);
+//   console.log(decoded);
 
-    try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
+// if (decoded.role === "admin") {
+//   navigate("/admin-dashboard");
+// } else {
+//   navigate("/user-dashboard");
+// }
+const handleLogin = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+
+  try {
+    const res = await axios.post(
+      "http://localhost:5000/api/auth/login",
+      {
         email,
         password,
-      });
+      }
+    );
 
-      localStorage.setItem("userId", res.data.userId);
-      navigate("/verify-otp");
-    } catch (err) {
-      alert(err.response?.data?.message || "Login failed");
-    } finally {
-      setLoading(false);
+    // Save token
+    localStorage.setItem("token", res.data.token);
+
+    // Decode token
+    const decoded = jwtDecode(res.data.token);
+    console.log("Decoded Token:", decoded);
+
+    // Navigate based on role
+    if (decoded.role === "admin") {
+      navigate("/admin-dashboard");
+    } else {
+      navigate("/user-dashboard");
     }
-  };
+
+  } catch (err) {
+    alert(err.response?.data?.message || "Login failed");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
      <motion.div

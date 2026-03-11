@@ -7,13 +7,20 @@ import { useNavigate } from "react-router-dom";
 export default function Navbar() {
   const [exploreOpen, setExploreOpen] = useState(false);
   const [aiOpen, setAiOpen] = useState(false);
-  const token = localStorage.getItem("token");
+  // const token = localStorage.getItem("token");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
 useEffect(() => {
-  const token = localStorage.getItem("token");
-  setIsLoggedIn(!!token);
+  const checkToken = () => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  };
+
+  checkToken();
+  window.addEventListener("storage", checkToken);
+
+  return () => window.removeEventListener("storage", checkToken);
 }, []);
 
 
@@ -88,7 +95,7 @@ useEffect(() => {
 
         <button onClick={() => {
           localStorage.removeItem("token");
-          navigate("/");
+          navigate("/login");
           window.location.reload();
          }}
         className="block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100"

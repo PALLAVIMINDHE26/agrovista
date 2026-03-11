@@ -46,6 +46,29 @@ router.delete("/places/:id", async (req, res) => {
   res.json({ message: "Place deleted successfully" });
 });
 
+// ---------------- BOOKINGS ----------------
+
+router.get("/activity-analytics", async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT 
+       a.title,
+       COUNT(ba.activity_id) AS bookings_count,
+       SUM(b.total_price) AS revenue
+       FROM activities a
+       LEFT JOIN booking_activities ba ON a.id = ba.activity_id
+       LEFT JOIN bookings b ON b.id = ba.booking_id
+       GROUP BY a.title
+       ORDER BY bookings_count DESC;
+      `);
+
+    res.json(result.rows);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+
 // -------- DASHBOARD STATS --------
 
 router.get("/stats", async (req, res) => {
@@ -71,6 +94,34 @@ router.get("/stats", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
+// -------- PENDING REVIEWS --------
+router.get("/pending-reviews", async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM activity_ratings
+       WHERE is_approved = false
+       ORDER BY created_at DESC`
+    );
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: "Failed" });
+  }
+});
+// Approve review
+router.put("/reviews/:id/approve", async (req, res) => {
+  try {
+    await pool.query(
+      `UPDATE activity_ratings
+       SET is_approved = true
+       WHERE id = $1`,
+      [req.params.id]
+    );
 
+    res.json({ message: "Review approved successfully" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Approval failed" });
+  }
+});
 
 module.exports = router;

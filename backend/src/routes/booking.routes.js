@@ -3,42 +3,59 @@ const router = express.Router();
 const pool = require("../config/db");
 
 
-// Get all bookings (Admin)
+// ================= GET ALL BOOKINGS (ADMIN) =================
 router.get("/", async (req, res) => {
   try {
     const result = await pool.query(`
       SELECT 
-        bookings.id,
-        users.email,
-        bookings.guests,
-        bookings.booking_date,
-        bookings.status,
-        bookings.total_price
-      FROM bookings
-      JOIN users ON bookings.user_id = users.id
-      ORDER BY bookings.created_at DESC
+        b.*, 
+        p.name AS place_name,
+        STRING_AGG(a.title, ', ') AS activities
+      FROM bookings b
+      LEFT JOIN agrotourism_places p 
+        ON b.place_id = p.id
+      LEFT JOIN booking_activities ba 
+        ON b.id = ba.booking_id
+      LEFT JOIN activities a 
+        ON ba.activity_id = a.id
+      GROUP BY b.id, p.name
+      ORDER BY b.id DESC
     `);
 
     res.json(result.rows);
-
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "Failed to fetch bookings" });
   }
 });
-// Create new booking
-router.post("/", async (req, res) => {
-  try {
-    const { user_id, place_id, guests, date, total_price } = req.body;
 
-    await pool.query(
+
+// ================= CREATE BOOKING =================
+router.post("/", async (req, res) => {
+  const { user_id, place_id, guests, booking_date, total_price, activities } = req.body;
+
+  try {
+    const bookingResult = await pool.query(
       `INSERT INTO bookings 
-      (user_id, place_id, guests, booking_date, total_price, status)
-      VALUES ($1,$2,$3,$4,$5,'pending')`,
-      [user_id, place_id, guests, date, total_price]
+       (user_id, place_id, guests, booking_date, total_price, status)
+       VALUES ($1,$2,$3,$4,$5,'pending')
+       RETURNING *`,
+      [user_id, place_id, guests, booking_date, total_price]
     );
 
-    res.json({ message: "Booking created successfully" });
+    const booking = bookingResult.rows[0];
+
+    if (activities && activities.length > 0) {
+      for (let activityId of activities) {
+        await pool.query(
+          `INSERT INTO booking_activities (booking_id, activity_id)
+           VALUES ($1,$2)`,
+          [booking.id, activityId]
+        );
+      }
+    }
+
+    res.json({ booking });
 
   } catch (err) {
     console.log("BOOKING ERROR:", err);
@@ -46,7 +63,8 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Update booking status (Admin confirm/cancel)
+
+// ================= UPDATE STATUS =================
 router.put("/:id", async (req, res) => {
   try {
     const { status } = req.body;
@@ -64,20 +82,29 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// Get bookings for a specific user
-router.get("/user/:userId", async (req, res) => {
-  try {
-    const { userId } = req.params;
 
+// ================= GET USER BOOKINGS (FIXED & MERGED) =================
+router.get("/user/:id", async (req, res) => {
+  const userId = req.params.id;
+
+  try {
     const result = await pool.query(
-      `SELECT 
-        b.*, 
-        p.name AS place_name
-       FROM bookings b
-       JOIN agrotourism_places p 
-       ON b.place_id = p.id
-       WHERE b.user_id = $1
-       ORDER BY b.created_at DESC`,
+      `
+      SELECT 
+        b.*,
+        p.name AS place_name,
+        STRING_AGG(a.title, ', ') AS activities
+      FROM bookings b
+      LEFT JOIN agrotourism_places p 
+        ON b.place_id = p.id
+      LEFT JOIN booking_activities ba 
+        ON b.id = ba.booking_id
+      LEFT JOIN activities a 
+        ON ba.activity_id = a.id
+      WHERE b.user_id = $1
+      GROUP BY b.id, p.name
+      ORDER BY b.id DESC
+      `,
       [userId]
     );
 
@@ -88,6 +115,5 @@ router.get("/user/:userId", async (req, res) => {
     res.status(500).json({ error: "Error fetching user bookings" });
   }
 });
-
 
 module.exports = router;

@@ -1,5 +1,6 @@
 import MainLayout from "../layouts/MainLayout";
 
+
 export default function Birds() {
   return (
     <MainLayout>

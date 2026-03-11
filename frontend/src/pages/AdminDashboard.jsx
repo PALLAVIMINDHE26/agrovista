@@ -41,13 +41,30 @@ export default function AdminDashboard() {
   const [bookings, setBookings] = useState([]);
   const [activeTab, setActiveTab] = useState("overview");
   const [message, setMessage] = useState("");
-  const [users, setUsers] = useState([]);
+  // const [users, setUsers] = useState([]);
   const [darkMode, setDarkMode] = useState(false);
+  const [placesCount, setPlacesCount] = useState(0);
+  const [activityAnalytics, setActivityAnalytics] = useState([]);
+  const [pendingReviews, setPendingReviews] = useState([]);
+
+  // const [places, setPlaces] = useState([]);
+
+  // useEffect(() => {
+  //   fetchStats();
+  //   fetchBookings();
+  // }, []);
 
   useEffect(() => {
-    fetchStats();
-    fetchBookings();
-  }, []);
+  const fetchPlaces = async () => {
+    const res = await axios.get(
+      "http://localhost:5000/api/places"
+    );
+    setPlacesCount(res.data.length);
+  };
+
+  fetchPlaces();
+}, []);
+
 
   const fetchStats = () => {
     axios.get("http://localhost:5000/api/admin/stats")
@@ -68,6 +85,27 @@ export default function AdminDashboard() {
       });
   };
 
+  const fetchActivityAnalytics = async () => {
+    axios.get("http://localhost:5000/api/admin/activity-analytics")
+  .then(res => setActivityAnalytics(res.data));
+  // axios
+  // .get("http://localhost:5000/api/admin/pending-reviews")
+  // .then(res => setPendingReviews(res.data));
+  };
+
+      const totalActivityBookings = activityAnalytics.reduce(
+          (sum, a) => sum + Number(a.bookings_count),
+          0
+        );
+
+   useEffect(() => {
+    fetchStats();
+    fetchBookings();
+    fetchActivityAnalytics();
+    axios
+  .get("http://localhost:5000/api/admin/pending-reviews")
+  .then(res => setPendingReviews(res.data));
+  }, []);
   /* ================= MONTHLY GROUPING ================= */
 
   const monthlyData = {};
@@ -135,7 +173,7 @@ export default function AdminDashboard() {
   const destinationStats = {};
 
   bookings.forEach((b) => {
-    const place = b.place_name; // MUST come from backend JOIN
+    const place = b.places_name; // MUST come from backend JOIN
 
     if (!destinationStats[place]) {
       destinationStats[place] = 0;
@@ -189,6 +227,13 @@ export default function AdminDashboard() {
             </h2>
           </div>
 
+              <div className={`rounded-2xl shadow p-6 ${darkMode ? "bg-gray-800" : "bg-white"}`}>
+                <h3 className="text-sm text-gray-500">Activity Bookings</h3>
+                <h2 className="text-3xl font-bold mt-2 text-green-600">
+                <CountUp end={totalActivityBookings} duration={2} />
+                </h2>
+              </div>
+
           <div className={`rounded-2xl shadow p-6 ${darkMode ? "bg-gray-800" : "bg-white"}`}>
             <MapPin size={26} />
             <p className="mt-4 text-gray-500">Total Tours</p>
@@ -228,6 +273,15 @@ export default function AdminDashboard() {
           </button>
 
           <button
+            onClick={() => setActiveTab("pending-reviews")}
+            className={`px-6 py-2 rounded-full ${
+              activeTab === "pending-reviews" ? "bg-white shadow" : ""
+            }`}
+          >
+            Pending Reviews
+          </button>
+
+          <button
             onClick={() => setActiveTab("analytics")}
             className={`px-6 py-2 rounded-full ${
               activeTab === "analytics" ? "bg-white shadow" : ""
@@ -245,6 +299,7 @@ export default function AdminDashboard() {
               <h3 className="font-semibold mb-4">Recent Activity</h3>
               <p>Total Users: {stats.totalUsers || 0}</p>
               <p>Total Bookings: {bookings.length}</p>
+              <p>Total Places: {placesCount} </p>
               <p>Total Revenue: ₹{bookings.reduce((sum,b)=> sum + b.total_price,0)}</p>
             </div>
 
@@ -285,10 +340,13 @@ export default function AdminDashboard() {
             <table className="w-full text-left">
               <thead>
                 <tr className="border-b">
+                  {/* <th className="p-3">User</th>
+                  <th className="p-3">Place</th>   */}
                   <th className="p-3">Guests</th>
                   <th className="p-3">Date</th>
                   <th className="p-3">Status</th>
                   <th className="p-3">Action</th>
+                  <th className="p-3">Activities</th>
                 </tr>
               </thead>
 
@@ -314,9 +372,14 @@ export default function AdminDashboard() {
                         Cancel
                       </button>
                     </td>
+                    <td className="p-3">
+                     {b.activities || "None"}
+                    </td>
+
                   </tr>
                 ))}
               </tbody>
+              
             </table>
           </div>
         )}
@@ -347,9 +410,79 @@ export default function AdminDashboard() {
               <Bar data={bookingData} />
             </div>
 
+              <div className="mt-10 bg-white p-6 rounded-xl shadow">
+                <h3 className="text-xl font-semibold mb-4">
+                 Activity Popularity
+                 </h3>
+
+            <Bar
+               data={{
+                labels: activityAnalytics.map(a => a.title),
+                datasets: [
+               {
+                 label: "Bookings",
+                 data: activityAnalytics.map(a => a.bookings_count),
+                 backgroundColor: "#16a34a"
+                 },
+                {
+                 label: "Revenue",
+                 data: activityAnalytics.map(a => a.revenue),
+                 backgroundColor: "#f59e0b"
+                 }
+                ]
+              }}
+             />
+            </div>
           </div>
         )}
 
+        {/* ================= PENDING REVIEWS ================= */} 
+
+        {activeTab === "pending-reviews" && (
+          <div className="space-y-10">
+
+        <div className={`mt-10 p-6 rounded-xl shadow ${darkMode ? "bg-gray-800" : "bg-white"}`}>
+  <h3 className="text-xl font-semibold mb-4">
+    Pending Reviews
+  </h3>
+
+  {pendingReviews.length === 0 ? (
+    <p className="text-gray-500">No pending reviews</p>
+  ) : (
+    pendingReviews.map(review => (
+      <div
+        key={review.id}
+        className="flex justify-between items-center mb-4 border-b pb-3"
+      >
+        <div>
+          <p className="text-sm text-gray-700">
+            {review.review}
+          </p>
+          <p className="text-yellow-500 text-sm">
+            {"⭐".repeat(review.rating)}
+          </p>
+        </div>
+
+        <button
+          onClick={() => {
+            axios.put(
+              `http://localhost:5000/api/admin/reviews/${review.id}/approve`
+            ).then(() => {
+              setPendingReviews(
+                pendingReviews.filter(r => r.id !== review.id)
+              );
+            });
+          }}
+          className="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
+        >
+          Approve
+        </button>
+      </div>
+    ))
+  )}
+</div>
+          </div>
+        )}
       </div>
     </MainLayout>
   );
