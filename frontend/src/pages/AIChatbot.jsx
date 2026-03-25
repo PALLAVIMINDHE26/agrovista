@@ -11,6 +11,7 @@ const SUGGESTED_QUESTIONS = [
   "What activities are available at farm stays?",
 ];
 
+
 export default function AIChatbot() {
   const [messages, setMessages] = useState([
     {
@@ -224,6 +225,7 @@ export default function AIChatbot() {
           </div>
         </div>
       </MainLayout>
+      
     </motion.div>
   );
 }
