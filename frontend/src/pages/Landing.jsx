@@ -9,32 +9,32 @@ import MainLayout from "../layouts/MainLayout";
 ============================================================ */
 const GALLERY = [
   {
-    src: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80",
+    src: "https://www.global-agriculture.com/wp-content/uploads/2025/02/Untitled-1-Recovered-768x427.jpg",
     label: "Punjab Wheat Fields",
     state: "Punjab",
   },
   {
-    src: "https://images.unsplash.com/photo-1586771107445-d3ca888129ff?w=800&q=80",
+    src: "https://cdn.shopify.com/s/files/1/0354/9161/0668/files/spice-plantation_1024x1024.jpg?v=1607845874",
     label: "Kerala Spice Farms",
     state: "Kerala",
   },
   {
-    src: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80",
+    src: "https://media.odynovotours.com/article/78000/thar-desert-sunset-title_75675.jpg",
     label: "Rajasthan Desert Farms",
     state: "Rajasthan",
   },
   {
-    src: "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80",
+    src: "https://im.whatshot.in/img/2023/Feb/collage-maker-27-feb-2023-0707-pm-1677505050.jpg",
     label: "Coorg Coffee Estates",
     state: "Karnataka",
   },
   {
-    src: "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&q=80",
+    src: "https://teafloor.com/blog/wp-content/uploads/2018/10/Tea-garden-in-assam-1-1.png",
     label: "Assam Tea Gardens",
     state: "Assam",
   },
   {
-    src: "https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=800&q=80",
+    src: "https://www.mumbaipuneadventures.com/wp-content/uploads/2023/01/sula-website-1200x675.jpg",
     label: "Maharashtra Vineyards",
     state: "Maharashtra",
   },
