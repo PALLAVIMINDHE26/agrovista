@@ -40,7 +40,7 @@ export default function Signup() {
   const handleGoogleSignup = () => {
     // TODO: Wire to Google OAuth
     // window.location.href = "http://localhost:5000/api/auth/google";
-    alert("Google Sign-up coming soon! Please use email signup for now.");
+    window.location.href = "http://localhost:5000/api/auth/google";
   };
 
   /* ---- Password strength ---- */
@@ -100,14 +100,14 @@ export default function Signup() {
                 </span>
               </h2>
               <p className="text-green-100 text-lg leading-relaxed mb-8">
-                Free to join. Instant access to 60+ farm destinations,
+                Free to join. Instant access to 50+ farm destinations,
                 AI tools and exclusive booking deals.
               </p>
 
               {/* Benefits */}
               <div className="space-y-3">
                 {[
-                  { icon: "🌾", text: "Access 60+ verified agrotourism destinations" },
+                  { icon: "🌾", text: "Access 50+ verified agrotourism destinations" },
                   { icon: "🤖", text: "Free AI chatbot, disease detector & recommender" },
                   { icon: "📄", text: "Instant booking confirmation & PDF invoices" },
                   { icon: "🎯", text: "Personalized farm activity recommendations" },
@@ -132,7 +132,7 @@ export default function Signup() {
           {/* Stats */}
           <div className="grid grid-cols-3 gap-4">
             {[
-              { value: "60+",    label: "Destinations" },
+              { value: "50+",    label: "Destinations" },
               { value: "1,200+", label: "Happy Visitors" },
               { value: "4.8★",   label: "Avg Rating" },
             ].map((s, i) => (

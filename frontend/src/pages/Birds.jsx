@@ -115,15 +115,14 @@ function BirdModal({ bird, onClose, onPrev, onNext, hasPrev, hasNext }) {
           className="bg-white rounded-3xl overflow-hidden shadow-2xl w-full max-w-2xl max-h-[92vh] overflow-y-auto"
         >
           {/* Hero image */}
-          <div className="relative h-80 overflow-hidden bg-gray-200">
+          <div className="relative h-90 overflow-hidden bg-gray-200">
             <img
               src={bird.image_url}
               alt={bird.name}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover object-top"  // ← add object-top
               onError={(e) => {
-                e.target.src =
-                  "https://images.unsplash.com/photo-1444464666168-49d633b86797?w=800&q=80";
-              }}
+              e.target.src = "https://images.unsplash.com/photo-1444464666168-49d633b86797?w=800&q=80";
+             }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
 
@@ -254,10 +253,9 @@ function BirdCard({ bird, index, onClick }) {
         <img
           src={bird.image_url}
           alt={bird.name}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-110"  // ← add object-top
           onError={(e) => {
-            e.target.src =
-              "https://images.unsplash.com/photo-1444464666168-49d633b86797?w=600&q=80";
+          e.target.src = "https://images.unsplash.com/photo-1444464666168-49d633b86797?w=600&q=80";
           }}
           loading="lazy"
         />

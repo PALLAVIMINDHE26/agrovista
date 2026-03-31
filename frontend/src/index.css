@@ -17,3 +17,29 @@ body {
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-in-out;
 }
+
+/* ============================================================
+   GLOBAL IMAGE CONSISTENCY FIX
+   Ensures all farm/card images render at same size
+============================================================ */
+
+/* Card image containers */
+.card-img-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background-color: #f3f4f6;
+}
+
+.card-img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* Aspect ratio helpers */
+.aspect-card  { aspect-ratio: 16 / 10; }
+.aspect-square { aspect-ratio: 1 / 1;  }
+.aspect-wide  { aspect-ratio: 16 / 7;  }

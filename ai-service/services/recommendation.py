@@ -110,7 +110,7 @@ Return ONLY a JSON response in this exact format with no extra text:
 }}"""
 
         response = client.models.generate_content(
-            model="models/gemini-2.0-flash",
+            model="models/gemini-2.5-flash",
             config=types.GenerateContentConfig(
                 temperature=0.7,
                 max_output_tokens=800,

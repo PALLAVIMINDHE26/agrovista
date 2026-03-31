@@ -87,17 +87,17 @@ const FEATURES = [
 
 const TESTIMONIALS = [
   {
-    name: "Priya Sharma",
+    name: "Priya Gupta",
     location: "Mumbai",
     text: "AgroVista changed how I travel. The Kerala spice farm was absolutely magical — we picked pepper, cardamom and cooked with local farmers!",
-    avatar: "PS",
+    avatar: "PG",
     rating: 5,
   },
   {
-    name: "Rahul Verma",
-    location: "Delhi",
+    name: "Saima Khan",
+    location: "Mumbai",
     text: "Booked a weekend retreat in Punjab. The bullock cart rides and fresh harvest lunch were memories our family will cherish forever.",
-    avatar: "RV",
+    avatar: "SK",
     rating: 5,
   },
   {

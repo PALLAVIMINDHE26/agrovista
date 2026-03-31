@@ -17,36 +17,36 @@ export default function Login() {
 
   /* ---- Existing login handler preserved exactly ---- */
   const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+  e.preventDefault();
+  setLoading(true);
+  setError("");
 
-    try {
-      const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        { email, password }
-      );
+  try {
+    const res = await axios.post(
+      "http://localhost:5000/api/auth/login",
+      { email, password }
+    );
 
-      localStorage.setItem("token", res.data.token);
-      const decoded = jwtDecode(res.data.token);
+    // Step 1 — Save userId for OTP step
+    localStorage.setItem("userId", res.data.userId);
 
-      if (decoded.role === "admin") {
-        navigate("/admin-dashboard");
-      } else {
-        navigate("/user-dashboard");
-      }
-    } catch (err) {
-      setError(err.response?.data?.message || "Login failed. Please check your credentials.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    // Step 2 — Go to OTP verification page
+    navigate("/verify-otp");
 
+  } catch (err) {
+    setError(
+      err.response?.data?.message ||
+      "Login failed. Please check your credentials."
+    );
+  } finally {
+    setLoading(false);
+  }
+};
   /* ---- Google login handler (UI only — wire up when ready) ---- */
   const handleGoogleLogin = () => {
     // TODO: Wire to Google OAuth
     // window.location.href = "http://localhost:5000/api/auth/google";
-    alert("Google Login coming soon! Please use email login for now.");
+    window.location.href = "http://localhost:5000/api/auth/google";
   };
 
   return (
@@ -97,14 +97,14 @@ export default function Login() {
                 </span>
               </h2>
               <p className="text-green-100 text-lg leading-relaxed mb-8">
-                Connect with 60+ verified farm stays, discover harvest
+                Connect with 50+ verified farm stays, discover harvest
                 festivals and explore rural India like never before.
               </p>
 
               {/* Feature pills */}
               <div className="flex flex-wrap gap-3">
                 {[
-                  "🗺️ 60+ Destinations",
+                  "🗺️ 50+ Destinations",
                   "🤖 AI-Powered",
                   "🌿 Verified Farms",
                   "📅 Easy Booking",
@@ -134,7 +134,7 @@ export default function Login() {
                 P
               </div>
               <div>
-                <p className="text-white text-xs font-bold">Priya Sharma</p>
+                <p className="text-white text-xs font-bold">Priya Gupta</p>
                 <p className="text-green-200 text-xs">Mumbai</p>
               </div>
               <div className="ml-auto flex">

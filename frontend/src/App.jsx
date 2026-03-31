@@ -20,16 +20,14 @@ import Recommendation from "./pages/Recommendation";
 import BookNow from "./pages/BookNow";
 import Blogs from "./pages/Blogs";
 import Birds from "./pages/Birds";
-// import Activities from "./pages/Activities";
 import UserDashboard from "./pages/UserDashboard";
 import PlaceDetails from "./pages/PlaceDetails";
-// import PrivateRoute from "./components/PrivateRoute";
 import AdminRoute from "./components/AdminRoute";
 import Activities from "./pages/Activities";
 import ActivityDetails from "./pages/ActivityDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
 import EditProfile from "./pages/EditProfile";
-
+import GoogleCallback from "./pages/GoogleCallback";
 
 
 function AnimatedRoutes() {
@@ -67,7 +65,7 @@ function AnimatedRoutes() {
         <Route path="/activities" element={<Activities />} />
         <Route path="/activities/:id" element={<ActivityDetails />} />
         <Route path="/edit-profile" element={<EditProfile />} />
-
+        <Route path="/google-callback" element={<GoogleCallback />} />
 
          
       </Routes>

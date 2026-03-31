@@ -1,12 +1,27 @@
 const express = require("express");
 const cors = require("cors");
+const session  = require("express-session");
+const passport = require("passport");
+
 const authRoutes = require("./routes/auth.routes");
-
-
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}));
 app.use(express.json());
+
+
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false } // set true in production with HTTPS
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
 app.use("/api/auth", authRoutes);
 
 app.get("/", (req, res) => {

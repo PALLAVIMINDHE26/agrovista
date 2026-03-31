@@ -1,7 +1,7 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import Navbar from "../components/Navbar";
 
 /* ============================================================
@@ -16,31 +16,31 @@ const STATES = [
 ];
 
 const SORT_OPTIONS = [
-  { value: "", label: "Default" },
-  { value: "rating_desc", label: "Top Rated" },
-  { value: "az", label: "A – Z" },
-  { value: "za", label: "Z – A" },
+  { value: "",             label: "Default"          },
+  { value: "rating_desc",  label: "Top Rated"        },
+  { value: "az",           label: "A – Z"            },
+  { value: "za",           label: "Z – A"            },
 ];
 
 const FOOTER_LINKS = {
   Explore: [
-    { label: "Destinations",     to: "/places" },
-    { label: "Culture",          to: "/culture" },
-    { label: "Activities",       to: "/activities" },
-    { label: "Book Now",         to: "/book-now" },
-    { label: "Blogs",            to: "/blogs" },
-    { label: "Birds",            to: "/birds" },
+    { label: "Destinations",     to: "/places"           },
+    { label: "Culture",          to: "/culture"          },
+    { label: "Activities",       to: "/activities"       },
+    { label: "Book Now",         to: "/book-now"         },
+    { label: "Blogs",            to: "/blogs"            },
+    { label: "Birds",            to: "/birds"            },
   ],
   "AI Tools": [
-    { label: "AI Chatbot",       to: "/chatbot" },
+    { label: "AI Chatbot",       to: "/chatbot"          },
     { label: "Disease Detector", to: "/disease-detector" },
-    { label: "Recommender",      to: "/recommendation" },
+    { label: "Recommender",      to: "/recommendation"   },
   ],
   Account: [
-    { label: "Login",            to: "/login" },
-    { label: "Sign Up",          to: "/signup" },
-    { label: "My Dashboard",     to: "/dashboard" },
-    { label: "Admin Panel",      to: "/admin-dashboard" },
+    { label: "Login",            to: "/login"            },
+    { label: "Sign Up",          to: "/signup"           },
+    { label: "My Dashboard",     to: "/dashboard"        },
+    { label: "Admin Panel",      to: "/admin-dashboard"  },
   ],
 };
 
@@ -68,7 +68,7 @@ function Stars({ rating }) {
 }
 
 /* ============================================================
-   PLACE CARD
+   PLACE CARD — single <Link>, no nested anchors
 ============================================================ */
 function PlaceCard({ place, index }) {
   return (
@@ -76,97 +76,103 @@ function PlaceCard({ place, index }) {
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
-      transition={{ delay: (index % 3) * 0.1, duration: 0.45 }}
+      transition={{ delay: (index % 4) * 0.08, duration: 0.45 }}
       whileHover={{ y: -8 }}
       className="group bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 border border-gray-100"
     >
-      {/* Image */}
-      <div className="relative h-56 overflow-hidden bg-gray-200">
-        <img
-          src={place.image_url}
-          alt={place.name}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-          onError={(e) => {
-            e.target.src =
-              "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&q=80";
-          }}
-          loading="lazy"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+      {/* ── Single <Link> wraps the entire card — NO nested <a> ── */}
+      <Link to={`/places/${place.id}`} className="block">
 
-        {/* State badge */}
-        <div className="absolute top-3 left-3">
-          <span className="bg-white/90 backdrop-blur-sm text-green-700 text-xs font-bold px-3 py-1 rounded-full">
-            📍 {place.state}
-          </span>
-        </div>
+        {/* Image */}
+        <div className="relative h-56 overflow-hidden bg-gray-200">
+          <img
+            src={place.image_url}
+            alt={place.name}
+            className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
+            onError={(e) => {
+              e.target.src =
+                "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&q=80";
+            }}
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-        {/* Rating badge */}
-        <div className="absolute top-3 right-3">
-          <span className="bg-amber-400 text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
-            ⭐ {place.rating}
-          </span>
-        </div>
-
-        {/* Hover CTA */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <div className="bg-white text-green-700 font-bold px-5 py-2.5 rounded-full text-sm shadow-xl">
-            Explore →
-          </div>
-        </div>
-
-        {/* Price range at bottom */}
-        {place.price_range && (
-          <div className="absolute bottom-3 left-3">
-            <span className="bg-green-600/90 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1 rounded-full">
-              {place.price_range}
+          {/* State badge */}
+          <div className="absolute top-3 left-3">
+            <span className="bg-white/90 backdrop-blur-sm text-green-700 text-xs font-bold px-3 py-1 rounded-full">
+              📍 {place.state}
             </span>
           </div>
-        )}
-      </div>
 
-      {/* Content */}
-      <div className="p-5">
-        <h3 className="text-base font-black text-gray-900 mb-1 group-hover:text-green-700 transition-colors leading-snug line-clamp-1">
-          {place.name}
-        </h3>
+          {/* Rating badge */}
+          <div className="absolute top-3 right-3">
+            <span className="bg-amber-400 text-white text-xs font-bold px-2.5 py-1 rounded-full">
+              ⭐ {place.rating}
+            </span>
+          </div>
 
-        <div className="flex items-center gap-2 mb-2">
-          <Stars rating={place.rating} />
-        </div>
+          {/* Hover CTA */}
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="bg-white text-green-700 font-bold px-5 py-2.5 rounded-full text-sm shadow-xl">
+              Explore →
+            </div>
+          </div>
 
-        <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 mb-4">
-          {place.description}
-        </p>
-
-        {/* Features chips */}
-        {place.highlights && place.highlights.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mb-4">
-            {place.highlights.slice(0, 2).map((h, i) => (
-              <span
-                key={i}
-                className="bg-green-50 text-green-700 text-xs px-2.5 py-1 rounded-full border border-green-100"
-              >
-                {h}
+          {/* Price range */}
+          {place.price_range && (
+            <div className="absolute bottom-3 left-3">
+              <span className="bg-green-600/90 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1 rounded-full">
+                {place.price_range}
               </span>
-            ))}
-          </div>
-        )}
-
-        <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-          {place.best_time && (
-            <span className="text-xs text-gray-400 flex items-center gap-1">
-              🗓️ {place.best_time?.split("–")[0].trim()}
-            </span>
+            </div>
           )}
-          <Link
-            to={`/places/${place.id}`}
-            className="ml-auto bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition-colors"
-          >
-            View Details
-          </Link>
         </div>
-      </div>
+
+        {/* Content */}
+        <div className="p-5">
+          <h3 className="text-base font-black text-gray-900 mb-1 group-hover:text-green-700 transition-colors leading-snug line-clamp-1">
+            {place.name}
+          </h3>
+
+          <div className="mb-2">
+            <Stars rating={place.rating} />
+          </div>
+
+          <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 mb-3">
+            {place.description}
+          </p>
+
+          {/* Highlight chips */}
+          {place.highlights && place.highlights.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-3">
+              {place.highlights.slice(0, 2).map((h, i) => (
+                <span
+                  key={i}
+                  className="bg-green-50 text-green-700 text-xs px-2.5 py-1 rounded-full border border-green-100"
+                >
+                  {h}
+                </span>
+              ))}
+            </div>
+          )}
+
+          <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+            {place.best_time ? (
+              <span className="text-xs text-gray-400">
+                🗓️ {place.best_time.split("–")[0].trim()}
+              </span>
+            ) : (
+              <span className="text-xs text-gray-400">
+                📍 {place.district || place.state}
+              </span>
+            )}
+            <span className="bg-green-600 group-hover:bg-green-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition-colors">
+              View Details
+            </span>
+          </div>
+        </div>
+
+      </Link>
     </motion.div>
   );
 }
@@ -187,7 +193,7 @@ function PlacesFooter() {
               AgroVista 🌿
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
-              India's unified agrotourism platform connecting you to 60+
+              India's unified agrotourism platform connecting you to 50+
               authentic farm experiences across all 28 states.
             </p>
             <div className="flex gap-3">
@@ -204,7 +210,7 @@ function PlacesFooter() {
 
           {Object.entries(FOOTER_LINKS).map(([heading, links]) => (
             <div key={heading}>
-              <h3 className="font-bold text-gray-200 mb-4 text-sm uppercase tracking-wider">
+              <h3 className="font-bold text-gray-200 mb-4 text-xs uppercase tracking-widest">
                 {heading}
               </h3>
               <ul className="space-y-2.5">
@@ -235,9 +241,15 @@ function PlacesFooter() {
         <div className="border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-gray-500">
           <span>© 2026 AgroVista. Made with 🌿 for Rural India.</span>
           <div className="flex gap-6">
-            <Link to="/" className="hover:text-green-400 transition-colors">Privacy Policy</Link>
-            <Link to="/" className="hover:text-green-400 transition-colors">Terms of Service</Link>
-            <Link to="/places" className="hover:text-green-400 transition-colors">All Destinations</Link>
+            <Link to="/" className="hover:text-green-400 transition-colors">
+              Privacy Policy
+            </Link>
+            <Link to="/" className="hover:text-green-400 transition-colors">
+              Terms of Service
+            </Link>
+            <Link to="/places" className="hover:text-green-400 transition-colors">
+              All Destinations
+            </Link>
           </div>
         </div>
       </div>
@@ -249,14 +261,15 @@ function PlacesFooter() {
    MAIN PAGE
 ============================================================ */
 export default function Places() {
-  const [places, setPlaces]           = useState([]);
-  const [loading, setLoading]         = useState(true);
-  const [search, setSearch]           = useState("");
-  const [stateFilter, setStateFilter] = useState("");
-  const [sortOrder, setSortOrder]     = useState("");
+  const [places, setPlaces]             = useState([]);
+  const [loading, setLoading]           = useState(true);
+  const [search, setSearch]             = useState("");
+  const [stateFilter, setStateFilter]   = useState("");
+  const [sortOrder, setSortOrder]       = useState("");
   const [visibleCount, setVisibleCount] = useState(12);
   const navigate = useNavigate();
 
+  /* ---- Fetch ---- */
   useEffect(() => {
     axios
       .get("http://localhost:5000/api/places")
@@ -265,7 +278,7 @@ export default function Places() {
       .finally(() => setLoading(false));
   }, []);
 
-  /* ---- filter + sort ---- */
+  /* ---- Filter + sort ---- */
   let filtered = places
     .filter((p) =>
       p.name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -288,14 +301,18 @@ export default function Places() {
     setSearch("");
     setStateFilter("");
     setSortOrder("");
+    setVisibleCount(12);
   };
 
   const hasFilters = search || stateFilter || sortOrder;
 
-  /* ---- state stats ---- */
-  const stateCount  = new Set(places.map((p) => p.state)).size;
-  const avgRating   = places.length
-    ? (places.reduce((s, p) => s + parseFloat(p.rating || 0), 0) / places.length).toFixed(1)
+  /* ---- Stats ---- */
+  const stateCount = new Set(places.map((p) => p.state)).size;
+  const avgRating  = places.length
+    ? (
+        places.reduce((s, p) => s + parseFloat(p.rating || 0), 0) /
+        places.length
+      ).toFixed(1)
     : 0;
 
   return (
@@ -312,9 +329,10 @@ export default function Places() {
         <img
           src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1600&q=90"
           alt="Agrotourism Destinations"
-          className="w-full h-full object-cover scale-105"
+          className="w-full h-full object-cover object-center scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/80" />
+
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-6">
           <motion.p
             initial={{ opacity: 0, y: -10 }}
@@ -322,8 +340,9 @@ export default function Places() {
             transition={{ delay: 0.2 }}
             className="bg-white/10 backdrop-blur-sm border border-white/20 text-xs font-bold px-4 py-2 rounded-full mb-4 uppercase tracking-widest"
           >
-            🌾 60+ Destinations Across India
+            🌾 50+ Destinations Across India
           </motion.p>
+
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -336,6 +355,7 @@ export default function Places() {
               Agrotourism India
             </span>
           </motion.h1>
+
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -353,12 +373,17 @@ export default function Places() {
             transition={{ delay: 0.6 }}
             className="relative w-full max-w-xl"
           >
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+              🔍
+            </span>
             <input
               type="text"
               placeholder="Search destinations, states..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setVisibleCount(12);
+              }}
               className="w-full pl-11 pr-4 py-4 rounded-2xl bg-white/95 backdrop-blur-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400 shadow-2xl"
             />
           </motion.div>
@@ -371,14 +396,16 @@ export default function Places() {
           <div className="max-w-7xl mx-auto px-6 py-4 flex flex-wrap gap-8 justify-center">
             {[
               { label: "Destinations", value: places.length, emoji: "🗺️" },
-              { label: "States",        value: stateCount,    emoji: "🇮🇳" },
-              { label: "Avg Rating",    value: avgRating,     emoji: "⭐" },
-              { label: "Best Season",   value: "Oct–Mar",     emoji: "❄️" },
+              { label: "States",        value: stateCount,   emoji: "🇮🇳" },
+              { label: "Avg Rating",    value: avgRating,    emoji: "⭐"  },
+              { label: "Best Season",   value: "Oct–Mar",    emoji: "❄️"  },
             ].map((s, i) => (
               <div key={i} className="flex items-center gap-2 text-sm">
                 <span className="text-2xl">{s.emoji}</span>
                 <div>
-                  <span className="font-black text-gray-900 text-base">{s.value}</span>
+                  <span className="font-black text-gray-900 text-base">
+                    {s.value}
+                  </span>
                   <span className="text-gray-400 ml-1.5">{s.label}</span>
                 </div>
               </div>
@@ -396,7 +423,10 @@ export default function Places() {
             {/* State filter */}
             <select
               value={stateFilter}
-              onChange={(e) => setStateFilter(e.target.value)}
+              onChange={(e) => {
+                setStateFilter(e.target.value);
+                setVisibleCount(12);
+              }}
               className="px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-400 cursor-pointer shadow-sm"
             >
               {STATES.map((s) => (
@@ -409,20 +439,29 @@ export default function Places() {
             {/* Sort */}
             <select
               value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value)}
+              onChange={(e) => {
+                setSortOrder(e.target.value);
+                setVisibleCount(12);
+              }}
               className="px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-400 cursor-pointer shadow-sm"
             >
               {SORT_OPTIONS.map((o) => (
-                <option key={o.value} value={o.value}>{o.label}</option>
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
               ))}
             </select>
 
             {/* Results count */}
             <p className="text-sm text-gray-500 ml-auto">
               Showing{" "}
-              <span className="font-bold text-gray-900">{Math.min(visibleCount, filtered.length)}</span>
-              {" "}of{" "}
-              <span className="font-bold text-gray-900">{filtered.length}</span>{" "}
+              <span className="font-bold text-gray-900">
+                {Math.min(visibleCount, filtered.length)}
+              </span>{" "}
+              of{" "}
+              <span className="font-bold text-gray-900">
+                {filtered.length}
+              </span>{" "}
               destinations
             </p>
 
@@ -441,25 +480,27 @@ export default function Places() {
             <div className="flex flex-col items-center justify-center py-24 gap-4">
               <motion.div
                 animate={{ rotate: 360 }}
-                transition={{ repeat: Infinity, duration: 1.4, ease: "linear" }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 1.4,
+                  ease: "linear",
+                }}
                 className="w-12 h-12 border-4 border-green-100 border-t-green-600 rounded-full"
               />
               <p className="text-gray-500">Loading destinations...</p>
             </div>
           )}
 
-          {/* Grid */}
+          {/* ── GRID — PlaceCard handles its own Link, NO outer Link wrapper ── */}
           {!loading && visible.length > 0 && (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {visible.map((place, i) => (
-                <Link key={place.id} to={`/places/${place.id}`}>
-                  <PlaceCard place={place} index={i} />
-                </Link>
+                <PlaceCard key={place.id} place={place} index={i} />
               ))}
             </div>
           )}
 
-          {/* Empty */}
+          {/* Empty state */}
           {!loading && filtered.length === 0 && (
             <motion.div
               initial={{ opacity: 0 }}
@@ -489,12 +530,13 @@ export default function Places() {
                 onClick={() => setVisibleCount((c) => c + 12)}
                 className="bg-green-600 hover:bg-green-700 text-white px-10 py-4 rounded-2xl font-bold text-base transition-all hover:scale-105 shadow-lg"
               >
-                Load More Destinations ({filtered.length - visibleCount} remaining)
+                Load More Destinations (
+                {filtered.length - visibleCount} remaining)
               </button>
             </div>
           )}
 
-          {/* CTA banner */}
+          {/* AI recommendation CTA */}
           {!loading && (
             <motion.div
               initial={{ opacity: 0, y: 30 }}

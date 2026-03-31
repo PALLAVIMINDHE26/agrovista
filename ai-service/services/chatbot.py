@@ -184,6 +184,23 @@ def get_fallback(message: str) -> str:
 
 What would you like to know? Ask me anything! 😊"""
 
+import time
+
+def call_with_retry(client, model, config, contents, max_retries=3):
+    for attempt in range(max_retries):
+        try:
+            return client.models.generate_content(
+                model=model,
+                config=config,
+                contents=contents
+            )
+        except Exception as e:
+            if "429" in str(e) and attempt < max_retries - 1:
+                wait = (attempt + 1) * 10  # wait 10s, 20s, 30s
+                print(f"Rate limited, waiting {wait}s...")
+                time.sleep(wait)
+                continue
+            raise e
 
 # ================= MAIN CHAT FUNCTION =================
 
@@ -223,7 +240,7 @@ async def chat_with_gemini(message: str, history: list):
         print("History length:", len(contents))
 
         response = client.models.generate_content(
-            model="models/gemini-2.0-flash",
+            model="models/gemini-2.5-flash",
             config=types.GenerateContentConfig(
                 system_instruction=SYSTEM_PROMPT,
                 temperature=0.7,
