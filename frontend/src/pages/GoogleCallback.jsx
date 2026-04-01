@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+// import { motion } from "framer-motion";
+// import { Link } from "react-router-dom";
 
 export default function GoogleCallback() {
   const [params] = useSearchParams();
@@ -38,7 +38,7 @@ export default function GoogleCallback() {
     } else {
       navigate("/login");
     }
-  }, []);
+  }, [navigate, params]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-100">

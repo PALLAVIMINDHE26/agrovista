@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { motion, useScroll, useTransform , AnimatePresence } from "framer-motion";
 import CountUp from "react-countup";
 import MainLayout from "../layouts/MainLayout";
 
@@ -138,7 +138,7 @@ function Hero() {
       setCurrentBg((prev) => (prev + 1) % heroImages.length);
     }, 4000);
     return () => clearInterval(timer);
-  }, []);
+  }, [heroImages.length]);
 
   return (
     <div className="relative h-screen flex items-center justify-center overflow-hidden">

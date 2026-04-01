@@ -1,8 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { jwtDecode } from "jwt-decode";
+// import { motion } from "framer-motion";
+// import { jwtDecode } from "jwt-decode";
 
 /* ============================================================
    MAIN LOGIN PAGE — existing logic 100% preserved
